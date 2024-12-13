@@ -1,4 +1,4 @@
-# D2GI - D2 Graphic Improvements  
+# D2GIv2 - D2 Graphic Improvements v2
 
 [Read on English](README-EN.md)
 
