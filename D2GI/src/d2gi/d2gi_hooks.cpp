@@ -295,16 +295,16 @@ VOID D2GIHookInjector::InjectHooks()
 	bool trs_hook = PatchCallOperation(c_adwSetupTransformsCalls[s_eCurrentD2Version], (DWORD)SetupTransformsHook);
 	bool scr_hook = false;
 
-	if (s_eCurrentD2Version == D2V_8_2) //только для 8.2 (king.exe от 10.09.2009)
+	if (s_eCurrentD2Version == D2V_8_2) //С‚РѕР»СЊРєРѕ РґР»СЏ 8.2 (king.exe РѕС‚ 10.09.2009)
 	{
 		scr_hook = PatchCallOperation(0x576452, (DWORD)ScreenshotHook);
 
-		//патч скриншотов (CWinApp::MakeScreenshot) (0x5763D0) в 8.2
-		//почему-то перехват самой ф-ии 0x5763D0 приводит к тому, что игра перестаёт реагировать
-		//на нажатия клавиш, поэтому перехватил WritePhotoToFile (0x576452) и заглушил создание
-		//папки screenshots и bmp-файла
+		//РїР°С‚С‡ СЃРєСЂРёРЅС€РѕС‚РѕРІ (CWinApp::MakeScreenshot) (0x5763D0) РІ 8.2
+		//РїРѕС‡РµРјСѓ-С‚Рѕ РїРµСЂРµС…РІР°С‚ СЃР°РјРѕР№ С„-РёРё 0x5763D0 РїСЂРёРІРѕРґРёС‚ Рє С‚РѕРјСѓ, С‡С‚Рѕ РёРіСЂР° РїРµСЂРµСЃС‚Р°С‘С‚ СЂРµР°РіРёСЂРѕРІР°С‚СЊ
+		//РЅР° РЅР°Р¶Р°С‚РёСЏ РєР»Р°РІРёС€, РїРѕСЌС‚РѕРјСѓ РїРµСЂРµС…РІР°С‚РёР» WritePhotoToFile (0x576452) Рё Р·Р°РіР»СѓС€РёР» СЃРѕР·РґР°РЅРёРµ
+		//РїР°РїРєРё screenshots Рё bmp-С„Р°Р№Р»Р°
 
-		//CPatch взят из проекта D2InputWrapper от Voron295
+		//CPatch РІР·СЏС‚ РёР· РїСЂРѕРµРєС‚Р° D2InputWrapper РѕС‚ Voron295
 		//https://github.com/Voron295/rignroll-dinput-wrapper/blob/main/D2DInputWrapper/CPatch.h
 
 		//_mkdir(".\\screenshots");
