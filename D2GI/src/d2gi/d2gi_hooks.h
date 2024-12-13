@@ -3,7 +3,7 @@
 #include "../common/common.h"
 #include "../common/m3x4.h"
 
-#include "d2gi_common.h"
+//#include "d2gi_common.h"
 
 
 class D2GIHookInjector
@@ -12,7 +12,7 @@ class D2GIHookInjector
 	{
 		D2V_UNKNOWN = -1,
 		D2V_8_1,
-		D2V_8_1B,
+		D2V_8_2,
 	};
 
 	static D2VERSION s_eCurrentD2Version;
@@ -23,6 +23,7 @@ class D2GIHookInjector
 
 	static D2VERSION DetectD2Version();
 	static BOOL PatchCallOperation(DWORD dwOperationAddress, DWORD dwNewCallAddress);
+	static void __cdecl D2GIHookInjector::ScreenshotHook(void *a2);
 public:
 	static VOID InjectHooks();
 };
