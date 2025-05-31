@@ -2,7 +2,7 @@
 
 [Читать на русском](README.md)
 
-A slightly modified version of the *D2GI* wrapper (authors of the original project are [REDPOWAR](https://github.com/REDPOWAR) and [NewEXE](https://github.com/NewEXE)). It differs in that the ability to save screenshots has been fixed (added interception of the corresponding function), but only in game version 8.2 (in 8.1, saving screenshots will not work). In addition, this project includes the CPatch.h file from [D2InputWrapper](https://github.com/Voron295/rignroll-dinput-wrapper) authored by [Voron295](https://github.com/Voron295).
+A slightly modified version of the *D2GI* wrapper (authors of the original project are [REDPOWAR](https://github.com/REDPOWAR) and [NewEXE](https://github.com/NewEXE)). It differs in that the interface size is corrected and also the ability to save screenshots has been fixed (added hooks of the game functions). The innovations are only functional in the game version 8.2. In addition, this project includes the CPatch.h file from [D2InputWrapper](https://github.com/Voron295/rignroll-dinput-wrapper) authored by [Voron295](https://github.com/Voron295).
 
 ### Download  
 

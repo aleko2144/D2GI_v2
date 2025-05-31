@@ -115,7 +115,6 @@ VOID D2GI::OnDisplayModeSet(DWORD dwWidth, DWORD dwHeight, DWORD dwBPP, DWORD dw
 	m_fAspectRatioScale /= ((FLOAT)m_dwOriginalWidth / (FLOAT)m_dwOriginalHeight);
 }
 
-
 VOID D2GI::ReleaseResources()
 {
 	m_pDirectDrawProxy->ReleaseResources();
@@ -232,7 +231,7 @@ VOID D2GI::OnViewportSet(D3D7::LPD3DVIEWPORT7 pVP)
 		(FLOAT)(pVP->dwX + pVP->dwWidth), (FLOAT)(pVP->dwY + pVP->dwHeight));
 	ScaleFRect(&frtVP, &frtScaledVP);
 
-	// ugly piece of shit
+	// что-то не то (?)
 	if (pVP->dwX != 0 && pVP->dwY != 0 
 		&& pVP->dwWidth != m_dwOriginalWidth && pVP->dwHeight != m_dwOriginalHeight)
 	{
@@ -367,7 +366,10 @@ VOID D2GI::OnSysMemSurfaceBltOnBackBuffer(D2GISystemMemorySurface* pSrc, RECT* p
 	else
 		frtDst = FRECT(0, 0, (FLOAT)sDstDesc.Width, (FLOAT)sDstDesc.Height);
 
+	//вот тут и происходят чудеса с GUI
 	ScaleFRect(&frtDst, &frtScaledDst);
+	//ScaleFRect_GUI(&frtDst, &frtScaledDst);
+
 	m_pBlitter->Blit(pRT, &frtScaledDst,
 		pSrc->GetD3D9Texture(), &frtSrc, pSrc->HasColorKeyConversion());
 
@@ -658,6 +660,13 @@ VOID D2GI::OnLightSet(DWORD i, D3D7::LPD3DLIGHT7 pLight)
 
 VOID D2GI::OnMaterialSet(D3D7::LPD3DMATERIAL7 pMaterial)
 {
+	//D3D9::D3DMATERIAL9* d3d9Material = (D3D9::D3DMATERIAL9*)pMaterial;
+	//d3d9Material->Emissive.r = 0.0f;
+	//d3d9Material->Emissive.g = 0.0f;
+	//d3d9Material->Emissive.b = 0.0f;
+	////d3d9Material->Emissive.a = 1.0f;
+
+	//m_pDev->SetMaterial(d3d9Material);
 	m_pDev->SetMaterial((D3D9::D3DMATERIAL9*)pMaterial);
 }
 
@@ -761,6 +770,13 @@ VOID D2GI::DrawPrimitive(D3D7::D3DPRIMITIVETYPE pt, DWORD dwFVF, BOOL bStrided, 
 	DWORD        dwAlphaTestEnable, dwAlphaTestFunc, dwAlphaTestRef;
 	D2GITexture* pTexture = m_lpCurrentTextures[0];
 
+	//link shaders
+	//gr.SetPixelShader(g_pPixelShaderPhong);
+	//gr.SetVertexShader(g_pVertexShaderPhong);
+	//m_pDev->SetPixelShader();
+
+
+
 	BOOL bEmulateColorKey = (m_bColorKeyEnabled && pTexture != NULL && pTexture->HasColorKeyConversion());
 
 
@@ -820,6 +836,34 @@ VOID D2GI::DrawPrimitive(D3D7::D3DPRIMITIVETYPE pt, DWORD dwFVF, BOOL bStrided, 
 	}
 }
 
+VOID D2GI::ScaleFRect_GUI(FRECT* pSrc, FRECT* pOut)
+{
+	if (pSrc == NULL)
+	{
+		pOut->fLeft = pOut->fTop = 0;
+		pOut->fRight = (FLOAT)m_dwForcedWidth;
+		pOut->fBottom = (FLOAT)m_dwForcedHeight;
+		return;
+	}
+
+	//pOut->fLeft = (pSrc->fLeft * 1.0);
+	//pOut->fRight = (pSrc->fRight * 1.0);
+
+	//pOut->fTop = (pSrc->fTop * m_fHeightScale);
+	//pOut->fBottom = (pSrc->fBottom * m_fHeightScale);
+
+	//if (*(DWORD*)(0x6D2098)) {
+	//	pOut->fLeft = (pSrc->fLeft * m_fHeightScale);
+	//	pOut->fTop = (pSrc->fTop * m_fHeightScale);
+	//	pOut->fRight = (pSrc->fRight * m_fHeightScale);
+	//	pOut->fBottom = (pSrc->fBottom * m_fHeightScale);
+	//} else {
+
+	pOut->fLeft = (pSrc->fLeft * m_fWidthScale);
+	pOut->fTop = (pSrc->fTop * m_fHeightScale);
+	pOut->fRight = (pSrc->fRight * m_fWidthScale);
+	pOut->fBottom = (pSrc->fBottom * m_fHeightScale);
+}
 
 VOID D2GI::ScaleFRect(FRECT* pSrc, FRECT* pOut)
 {

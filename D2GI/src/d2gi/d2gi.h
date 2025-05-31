@@ -59,6 +59,9 @@ class D2GI
 	D2GIBlitter* m_pBlitter;
 	D2GIStridedPrimitiveRenderer* m_pStridedRenderer;
 
+	//D3D9::IDirect3DVertexShader9* m_pVertexShaderPhong;
+	//D3D9::IDirect3DPixelShader9* m_pPixelShaderPhong;
+
 	VOID LoadD3D9Library();
 	VOID ResetD3D9Device();
 	VOID ReleaseResources();
@@ -69,6 +72,7 @@ class D2GI
 	VOID DrawPrimitive(D3D7::D3DPRIMITIVETYPE, DWORD dwFVF, BOOL bStrided, VOID* pVertexData,
 		DWORD dwVertexCount, WORD* pIndexData, DWORD dwIndexCount, DWORD dwFlags);
 	VOID ScaleFRect(FRECT* pSrc, FRECT* pOut);
+	VOID ScaleFRect_GUI(FRECT* pSrc, FRECT* pOut);
 	VOID ScaleRect(RECT* pSrc, RECT* pOut);
 	static LRESULT CALLBACK WndProc_Static(HWND, UINT, WPARAM, LPARAM);
 	LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);

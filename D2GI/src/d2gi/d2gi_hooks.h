@@ -24,6 +24,10 @@ class D2GIHookInjector
 	static D2VERSION DetectD2Version();
 	static BOOL PatchCallOperation(DWORD dwOperationAddress, DWORD dwNewCallAddress);
 	static void __cdecl D2GIHookInjector::ScreenshotHook(void *a2);
+	static void D2GIHookInjector::OnPrepareStartGame();
+	static void D2GIHookInjector::OnSetupSidebarOffsets();
+	static void D2GIHookInjector::OnCall52ACB0();
+	static BOOL D2GIHookInjector::ResolutionsHook();
 public:
 	static VOID InjectHooks();
 };

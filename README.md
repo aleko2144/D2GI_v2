@@ -2,7 +2,7 @@
 
 [Read on English](README-EN.md)
 
-Слегка доработанный вариант враппера *D2GI* (авторы оригинального проекта - [REDPOWAR](https://github.com/REDPOWAR) и [NewEXE](https://github.com/NewEXE)). Отличается тем, что исправлена возможность сохранения скриншотов (добавлен перехват соответствующей функции), но только в игре версии 8.2 (в 8.1 сохранение скриншотов работать не будет). Кроме того, в данный проект включён файл CPatch.h из [D2InputWrapper](https://github.com/Voron295/rignroll-dinput-wrapper) за авторством [Voron295](https://github.com/Voron295).  
+Слегка доработанный вариант враппера *D2GI* (авторы оригинального проекта - [REDPOWAR](https://github.com/REDPOWAR) и [NewEXE](https://github.com/NewEXE)). Отличается тем, что исправлены размер интерфейса, а также возможность сохранения скриншотов (добавлены перехваты соответствующих функций). Нововведения работоспособны только в игре версии 8.2. Кроме того, в данный проект включён файл CPatch.h из [D2InputWrapper](https://github.com/Voron295/rignroll-dinput-wrapper) за авторством [Voron295](https://github.com/Voron295).  
 
 ### Скачать  
 
