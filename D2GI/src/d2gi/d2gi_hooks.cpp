@@ -465,16 +465,16 @@ VOID D2GIHookInjector::InjectHooks()
 	bool res_hook = false;
 	//bool txr_hook = false;
 
-	if (s_eCurrentD2Version == D2V_8_2) //только для 8.2 (king.exe от 10.09.2009)
+	if (s_eCurrentD2Version == D2V_8_2) //С‚РѕР»СЊРєРѕ РґР»СЏ 8.2 (king.exe РѕС‚ 10.09.2009)
 	{
 		scr_hook = PatchCallOperation(0x576452, (DWORD)ScreenshotHook);
 
-		//патч скриншотов (CWinApp::MakeScreenshot) (0x5763D0) в 8.2
-		//почему-то перехват самой ф-ии 0x5763D0 приводит к тому, что игра перестаёт реагировать
-		//на нажатия клавиш, поэтому перехватил WritePhotoToFile (0x576452) и заглушил создание
-		//папки screenshots и bmp-файла
+		//РїР°С‚С‡ СЃРєСЂРёРЅС€РѕС‚РѕРІ (CWinApp::MakeScreenshot) (0x5763D0) РІ 8.2
+		//РїРѕС‡РµРјСѓ-С‚Рѕ РїРµСЂРµС…РІР°С‚ СЃР°РјРѕР№ С„-РёРё 0x5763D0 РїСЂРёРІРѕРґРёС‚ Рє С‚РѕРјСѓ, С‡С‚Рѕ РёРіСЂР° РїРµСЂРµСЃС‚Р°С‘С‚ СЂРµР°РіРёСЂРѕРІР°С‚СЊ
+		//РЅР° РЅР°Р¶Р°С‚РёСЏ РєР»Р°РІРёС€, РїРѕСЌС‚РѕРјСѓ РїРµСЂРµС…РІР°С‚РёР» WritePhotoToFile (0x576452) Рё Р·Р°РіР»СѓС€РёР» СЃРѕР·РґР°РЅРёРµ
+		//РїР°РїРєРё screenshots Рё bmp-С„Р°Р№Р»Р°
 
-		//CPatch взят из проекта D2InputWrapper от Voron295
+		//CPatch РІР·СЏС‚ РёР· РїСЂРѕРµРєС‚Р° D2InputWrapper РѕС‚ Voron295
 		//https://github.com/Voron295/rignroll-dinput-wrapper/blob/main/D2DInputWrapper/CPatch.h
 
 		//_mkdir(".\\screenshots");
@@ -491,14 +491,6 @@ VOID D2GIHookInjector::InjectHooks()
 		else
 			Logger::Log(TEXT("Unable to hook screenshots function"));
 
-
-		//512E00 - функция, в которой задаётся разрешение экрана, которое влияет на интерфейс
-		//512F74   call    AdjustWin
-		//runtime debug params: AdjustWin(&g_WinApp, 0x400, 0x300, GAME_DEPTH16, 0x7E00);
-
-		//res_hook = PatchCallOperation(0x512F19, (DWORD)ResolutionsHook);
-
-
 		res_hook = PatchCallOperation(0x510C46, (DWORD)OnPrepareStartGame);
 		res_hook = ResolutionsHook();
 		res_hook = PatchCallOperation(0x510E62, (DWORD)OnSetupSidebarOffsets);
@@ -508,25 +500,6 @@ VOID D2GIHookInjector::InjectHooks()
 		//	Logger::Log(TEXT("Successfully injected resolutions hook (interface scale)"));
 		//else
 		//	Logger::Log(TEXT("Unable to hook resoultions function"));
-		
-		//глушение ошибки о размере текстуры
-		//CPatch::Nop(0x5DB437, 5);
-		//если заглушить, то: 
-		//"Необработанное исключение по адресу 0x005D781B в king.exe: 0xC0000005: нарушение прав доступа при чтении по адресу 0x00000000"
-		//т.е. king.exe->LPDIRECTDRAWSURFACE7 __cdecl CreateSurfaceFromImageData(unsigned int width, int height, const void *imageData), это и есть 5D781B
-
-		//0x5DB438	0x3	A4 79 FF 	D4 C8 F2
-		//CPatch::SetShort(0x5DB438, 0xA4);
-		//CPatch::SetShort(0x5DB438, 0xA4);
-		//CPatch::SetShort(0x5DB438, 0xA4);
-
-
-		//txr_hook = PatchCallOperation(0x4E0EA9, (DWORD)D2GUIHook);
-
-		//if (gui_hook)
-		//	Logger::Log(TEXT("Successfully injected GUI hook"));
-		//else
-		//	Logger::Log(TEXT("Unable to hook GUI"));
 	}
 	else {
 		Logger::Log(TEXT("Screenshots hook working only with game version 8.2, injection aborted"));
