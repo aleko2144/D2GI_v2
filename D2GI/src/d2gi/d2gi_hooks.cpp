@@ -392,6 +392,21 @@ BOOL D2GIHookInjector::ResolutionsHook()
 		} else {
 			xres = 1280;
 			yres = 720;
+
+			//check if xres <= 1204
+			CPatch::SetInt(0x569A6D, 1285);
+			//check if xres <= 800
+			CPatch::SetInt(0x569AA3, 1284);
+
+			//set pager X
+			CPatch::SetInt(0x569ACB, 936);
+			//set pager Y
+			CPatch::SetInt(0x569A68, 11);
+
+			//set tablo X
+			CPatch::SetInt(0x569AD9, -225);
+			//set text X
+			CPatch::SetInt(0x569AD4, 244);
 		}
 	}
 

@@ -55,10 +55,12 @@ VOID D2GITexture::LoadResource()
 
 	eFormat = g_asD2GIPF_To_D3D9PF[m_eD2GIPixelFormat];
 
-	if (HasColorKeyConversion())
+	if (HasColorKeyConversion()) {
 		eFormat = D3D9::D3DFMT_A8R8G8B8;
-	if (m_dwBPP == 8)
+	}
+	if (m_dwBPP == 8) {
 		eFormat = D3D9::D3DFMT_R5G6B5;
+	}
 
 	if (FAILED(pDev->CreateTexture(m_dwWidth, m_dwHeight,
 		m_dwMipMapCount, D3DUSAGE_DYNAMIC,
@@ -147,6 +149,7 @@ HRESULT D2GITexture::Blt(LPRECT pDestRT, D3D7::LPDIRECTDRAWSURFACE7 pSrc, LPRECT
 
 D3D9::IDirect3DSurface9* D2GITexture::GetD3D9Surface()
 {
+	//update transparent texture and replace it there?
 	return m_lpMipMapLevels[0]->GetD3D9Surface();
 }
 
@@ -176,7 +179,6 @@ BOOL D2GITexture::HasColorKeyConversion()
 {
 	return m_bColorKeySet && m_eD2GIPixelFormat == D2GIPF_16_565;
 }
-
 
 DWORD D2GITexture::GetOriginalColorKeyValue()
 {

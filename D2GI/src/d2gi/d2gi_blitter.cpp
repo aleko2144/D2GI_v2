@@ -173,7 +173,7 @@ VOID D2GIBlitter::Blit(IDirect3DSurface9* pDst, FRECT* pDstRT,
 
 	pDev->SetRenderState(D3DRS_ZENABLE, FALSE);
 	pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-	pDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	pDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
 	if (bEmulateCK)
 	{
 		pDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
