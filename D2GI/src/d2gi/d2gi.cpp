@@ -231,7 +231,7 @@ VOID D2GI::OnViewportSet(D3D7::LPD3DVIEWPORT7 pVP)
 		(FLOAT)(pVP->dwX + pVP->dwWidth), (FLOAT)(pVP->dwY + pVP->dwHeight));
 	ScaleFRect(&frtVP, &frtScaledVP);
 
-	// что-то не то (?)
+	// С‡С‚Рѕ-С‚Рѕ РЅРµ С‚Рѕ (?)
 	if (pVP->dwX != 0 && pVP->dwY != 0 
 		&& pVP->dwWidth != m_dwOriginalWidth && pVP->dwHeight != m_dwOriginalHeight)
 	{
@@ -366,7 +366,7 @@ VOID D2GI::OnSysMemSurfaceBltOnBackBuffer(D2GISystemMemorySurface* pSrc, RECT* p
 	else
 		frtDst = FRECT(0, 0, (FLOAT)sDstDesc.Width, (FLOAT)sDstDesc.Height);
 
-	//вот тут и происходят чудеса с GUI
+	//РІРѕС‚ С‚СѓС‚ Рё РїСЂРѕРёСЃС…РѕРґСЏС‚ С‡СѓРґРµСЃР° СЃ GUI
 	ScaleFRect(&frtDst, &frtScaledDst);
 	//ScaleFRect_GUI(&frtDst, &frtScaledDst);
 
@@ -778,7 +778,7 @@ VOID D2GI::DrawPrimitive(D3D7::D3DPRIMITIVETYPE pt, DWORD dwFVF, BOOL bStrided, 
 	BOOL bEmulateColorKey = (m_bColorKeyEnabled && pTexture != NULL && pTexture->HasColorKeyConversion());
 	BOOL fixAlpha = (pTexture != NULL && pTexture->GetD2GIPixelFormat() == D2GIPF_16_4444);
 
-	if (bEmulateColorKey)
+	if (bEmulateColorKey || fixAlpha)
 	{
 		m_pDev->GetRenderState(D3D9::D3DRS_ALPHATESTENABLE, &dwAlphaTestEnable);
 		m_pDev->GetRenderState(D3D9::D3DRS_ALPHAFUNC, &dwAlphaTestFunc);
@@ -787,14 +787,9 @@ VOID D2GI::DrawPrimitive(D3D7::D3DPRIMITIVETYPE pt, DWORD dwFVF, BOOL bStrided, 
 		m_pDev->SetRenderState(D3D9::D3DRS_ALPHATESTENABLE, TRUE);
 		m_pDev->SetRenderState(D3D9::D3DRS_ALPHAFUNC, D3D9::D3DCMP_GREATEREQUAL);
 		m_pDev->SetRenderState(D3D9::D3DRS_ALPHAREF, 0x00000080);
-	} else if (fixAlpha) { //if alpha enabled, used texture is RGBA and alpha by color disabled
-		m_pDev->GetRenderState(D3D9::D3DRS_ALPHATESTENABLE, &dwAlphaTestEnable);
-		m_pDev->GetRenderState(D3D9::D3DRS_ALPHAFUNC, &dwAlphaTestFunc);
-		m_pDev->GetRenderState(D3D9::D3DRS_ALPHAREF, &dwAlphaTestRef);
 
-		m_pDev->SetRenderState(D3D9::D3DRS_ALPHAREF, (DWORD)0x00000001); //20
-		m_pDev->SetRenderState(D3D9::D3DRS_ALPHATESTENABLE, TRUE);
-		m_pDev->SetRenderState(D3D9::D3DRS_ALPHAFUNC, D3D9::D3DCMP_GREATEREQUAL);
+		if (fixAlpha)
+			m_pDev->SetRenderState(D3D9::D3DRS_ALPHAREF, (DWORD)0x00000001); //20
 	}
 
 	if (bStrided)
@@ -835,14 +830,8 @@ VOID D2GI::DrawPrimitive(D3D7::D3DPRIMITIVETYPE pt, DWORD dwFVF, BOOL bStrided, 
 		}
 	}
 
-	if (bEmulateColorKey)
+	if (bEmulateColorKey || fixAlpha)
 	{
-		m_pDev->SetRenderState(D3D9::D3DRS_ALPHATESTENABLE, dwAlphaTestEnable);
-		m_pDev->SetRenderState(D3D9::D3DRS_ALPHAFUNC, dwAlphaTestFunc);
-		m_pDev->SetRenderState(D3D9::D3DRS_ALPHAREF, dwAlphaTestRef);
-	}
-
-	if (fixAlpha) {
 		m_pDev->SetRenderState(D3D9::D3DRS_ALPHATESTENABLE, dwAlphaTestEnable);
 		m_pDev->SetRenderState(D3D9::D3DRS_ALPHAFUNC, dwAlphaTestFunc);
 		m_pDev->SetRenderState(D3D9::D3DRS_ALPHAREF, dwAlphaTestRef);
