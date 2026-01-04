@@ -1,4 +1,3 @@
-
 #include "../common/dir.h"
 #include "../common/logger.h"
 
@@ -9,8 +8,9 @@ WINDOWMODE D2GIConfig::s_eWindowMode  = WMODE_BORDERLESS;
 DWORD      D2GIConfig::s_dwVideoWidth = 0, D2GIConfig::s_dwVideoHeight = 0;
 BOOL       D2GIConfig::s_bEnableHooks = TRUE;
 BOOL       D2GIConfig::s_bEnableVSync = FALSE;
+BOOL       D2GIConfig::s_bFixAlpha    = FALSE;
 CHAR       D2GIConfig::s_cScreenshotsPath[256];
-IMG_FORMAT D2GIConfig::s_eImgFormat = IMG_BMP;
+IMG_FORMAT D2GIConfig::s_eImgFormat   = IMG_BMP;
 
 DWORD D2GIConfig::GetVideoWidth()
 {
@@ -53,10 +53,11 @@ VOID D2GIConfig::ReadFromFile()
 		s_eWindowMode = WMODE_BORDERLESS;
 	}
 
-	s_dwVideoWidth = GetPrivateProfileInt(TEXT("VIDEO"), TEXT("Width"), 0, szConfigFile);
+	s_dwVideoWidth  = GetPrivateProfileInt(TEXT("VIDEO"), TEXT("Width"), 0, szConfigFile);
 	s_dwVideoHeight = GetPrivateProfileInt(TEXT("VIDEO"), TEXT("Height"), 0, szConfigFile);
-	s_bEnableVSync = !!GetPrivateProfileInt(TEXT("VIDEO"), TEXT("EnableVSync"), FALSE, szConfigFile);
-	s_bEnableHooks = !!GetPrivateProfileInt(TEXT("HOOKS"), TEXT("EnableHooks"), TRUE, szConfigFile);
+	s_bEnableVSync  = !!GetPrivateProfileInt(TEXT("VIDEO"), TEXT("EnableVSync"), FALSE, szConfigFile);
+	s_bFixAlpha     = !!GetPrivateProfileInt(TEXT("VIDEO"), TEXT("FixAlpha"), FALSE, szConfigFile);
+	s_bEnableHooks  = !!GetPrivateProfileInt(TEXT("HOOKS"), TEXT("EnableHooks"), TRUE, szConfigFile);
 
 	//screenshots config
 	//path
@@ -76,4 +77,4 @@ VOID D2GIConfig::ReadFromFile()
 		Logger::Warning(TEXT("Unknown image format \"%s\", setting it to BMP"), szWinMode);
 		s_eImgFormat = IMG_BMP;
 	}
-}
+}  
