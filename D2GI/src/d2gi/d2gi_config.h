@@ -24,6 +24,7 @@ class D2GIConfig
 	static DWORD      s_dwVideoWidth, s_dwVideoHeight;
 	static BOOL       s_bEnableHooks;
 	static BOOL       s_bEnableVSync;
+	static BOOL       s_bFixAlpha;
 	static CHAR       s_cScreenshotsPath[256];
 	static IMG_FORMAT s_eImgFormat;
 public:
@@ -34,6 +35,7 @@ public:
 	static DWORD GetVideoHeight();
 	static BOOL  HooksEnabled() { return s_bEnableHooks; };
 	static BOOL  VSyncEnabled() { return s_bEnableVSync; };
+	static BOOL  FixAlphaEnabled() { return s_bFixAlpha; };
 	static CHAR* GetScreenshotsPath() { return s_cScreenshotsPath; };
 	static IMG_FORMAT GetScreenshotsFormat() { return s_eImgFormat;  }
-};
+}; 
