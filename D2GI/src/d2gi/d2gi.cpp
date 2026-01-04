@@ -554,18 +554,24 @@ VOID D2GI::OnTextureStageSet(DWORD i, D3D7::D3DTEXTURESTAGESTATETYPE eState, DWO
 		case D3D7::D3DTSS_ALPHAARG2:
 			m_pDev->SetTextureStageState(i, D3D9::D3DTSS_ALPHAARG2, dwValue);
 			break;
+
 		case D3D7::D3DTSS_BUMPENVMAT00:
+			//m_pDev->SetTextureStageState(i, D3D9::D3DTSS_BUMPENVMAT00, DWORD(1.0f));
 			m_pDev->SetTextureStageState(i, D3D9::D3DTSS_BUMPENVMAT00, dwValue);
 			break;
 		case D3D7::D3DTSS_BUMPENVMAT01:
+			//m_pDev->SetTextureStageState(i, D3D9::D3DTSS_BUMPENVMAT01, DWORD(0.0f));
 			m_pDev->SetTextureStageState(i, D3D9::D3DTSS_BUMPENVMAT01, dwValue);
 			break;
 		case D3D7::D3DTSS_BUMPENVMAT10:
+			//m_pDev->SetTextureStageState(i, D3D9::D3DTSS_BUMPENVMAT10, DWORD(0.0f));
 			m_pDev->SetTextureStageState(i, D3D9::D3DTSS_BUMPENVMAT10, dwValue);
 			break;
 		case D3D7::D3DTSS_BUMPENVMAT11:
+			//m_pDev->SetTextureStageState(i, D3D9::D3DTSS_BUMPENVMAT11, DWORD(1.0f));
 			m_pDev->SetTextureStageState(i, D3D9::D3DTSS_BUMPENVMAT11, dwValue);
 			break;
+
 		case D3D7::D3DTSS_TEXCOORDINDEX:
 			m_pDev->SetTextureStageState(i, D3D9::D3DTSS_TEXCOORDINDEX, dwValue);
 			break;
@@ -775,8 +781,12 @@ VOID D2GI::DrawPrimitive(D3D7::D3DPRIMITIVETYPE pt, DWORD dwFVF, BOOL bStrided, 
 	//gr.SetVertexShader(g_pVertexShaderPhong);
 	//m_pDev->SetPixelShader();
 
+	//d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME) 
+
+	//m_pDev->SetRenderState(D3D9::D3DRS_MULTISAMPLEANTIALIAS, TRUE);
+
 	BOOL bEmulateColorKey = (m_bColorKeyEnabled && pTexture != NULL && pTexture->HasColorKeyConversion());
-	BOOL fixAlpha = (pTexture != NULL && pTexture->GetD2GIPixelFormat() == D2GIPF_16_4444);
+	BOOL fixAlpha = D2GIConfig::FixAlphaEnabled() && (pTexture != NULL && pTexture->GetD2GIPixelFormat() == D2GIPF_16_4444);
 
 	if (bEmulateColorKey || fixAlpha)
 	{
