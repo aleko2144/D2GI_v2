@@ -271,6 +271,7 @@ int   yres;
 int   real_xres;
 int   real_yres;
 float real_aspect;
+float ui_aspect;
 int   settings_res;
 
 signed int _fastcall AdjustWin(DWORD* CWinApp, int width, int height, int depth, int flags) {
@@ -306,7 +307,7 @@ void D2GIHookInjector::OnCall52ACB0() {
 	float* fov_x = (float *)(*(DWORD *)0x696CCC + 0x58);
 	float* fov_y = (float *)(*(DWORD *)0x696CCC + 0x54);
 
-	*fov_x = (float)real_xres / (float)real_yres * 1.2;
+	*fov_x = ui_aspect * 1.2;
 	*fov_y = 1.2;
 }
 
@@ -410,6 +411,8 @@ BOOL D2GIHookInjector::ResolutionsHook()
 		}
 	}
 
+	ui_aspect = (float)xres / yres;
+
 	Logger::Log(TEXT("Current GUI res is %dx%d"), xres, yres);
 
 	//replacing default screen resolutions in the game settings
@@ -491,6 +494,14 @@ VOID D2GIHookInjector::InjectHooks()
 		else
 			Logger::Log(TEXT("Unable to hook screenshots function"));
 
+
+		//512E00 - функция, в которой задаётся разрешение экрана, которое влияет на интерфейс
+		//512F74   call    AdjustWin
+		//runtime debug params: AdjustWin(&g_WinApp, 0x400, 0x300, GAME_DEPTH16, 0x7E00);
+
+		//res_hook = PatchCallOperation(0x512F19, (DWORD)ResolutionsHook);
+
+
 		res_hook = PatchCallOperation(0x510C46, (DWORD)OnPrepareStartGame);
 		res_hook = ResolutionsHook();
 		res_hook = PatchCallOperation(0x510E62, (DWORD)OnSetupSidebarOffsets);
@@ -500,6 +511,25 @@ VOID D2GIHookInjector::InjectHooks()
 		//	Logger::Log(TEXT("Successfully injected resolutions hook (interface scale)"));
 		//else
 		//	Logger::Log(TEXT("Unable to hook resoultions function"));
+		
+		//глушение ошибки о размере текстуры
+		//CPatch::Nop(0x5DB437, 5);
+		//если заглушить, то: 
+		//"Необработанное исключение по адресу 0x005D781B в king.exe: 0xC0000005: нарушение прав доступа при чтении по адресу 0x00000000"
+		//т.е. king.exe->LPDIRECTDRAWSURFACE7 __cdecl CreateSurfaceFromImageData(unsigned int width, int height, const void *imageData), это и есть 5D781B
+
+		//0x5DB438	0x3	A4 79 FF 	D4 C8 F2
+		//CPatch::SetShort(0x5DB438, 0xA4);
+		//CPatch::SetShort(0x5DB438, 0xA4);
+		//CPatch::SetShort(0x5DB438, 0xA4);
+
+
+		//txr_hook = PatchCallOperation(0x4E0EA9, (DWORD)D2GUIHook);
+
+		//if (gui_hook)
+		//	Logger::Log(TEXT("Successfully injected GUI hook"));
+		//else
+		//	Logger::Log(TEXT("Unable to hook GUI"));
 	}
 	else {
 		Logger::Log(TEXT("Screenshots hook working only with game version 8.2, injection aborted"));
