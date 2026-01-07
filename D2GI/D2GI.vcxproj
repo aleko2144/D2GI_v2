@@ -75,16 +75,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>ddraw</TargetName>
     <TargetExt>.dll</TargetExt>
-    <IncludePath>$(DXSDK_DIR)\Include\;$(IncludePath)</IncludePath>
     <OutDir>$(D2DIR)</OutDir>
-    <LibraryPath>$(DXSDK_DIR)\Lib\$(PlatformTarget);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>ddraw</TargetName>
     <TargetExt>.dll</TargetExt>
-    <IncludePath>$(DXSDK_DIR)\Include\;$(IncludePath)</IncludePath>
     <OutDir>$(D2DIR)</OutDir>
-    <LibraryPath>$(DXSDK_DIR)\Lib\$(PlatformTarget);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
