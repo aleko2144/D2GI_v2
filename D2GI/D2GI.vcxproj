@@ -90,6 +90,7 @@
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,6 +125,7 @@ call echo Shaders compiled.</Command>
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -189,6 +191,7 @@ call echo Shaders compiled.</Command>
     <ClCompile Include="src\d2gi\d2gi_texture.cpp" />
     <ClCompile Include="src\d2gi\d2gi_vb_container.cpp" />
     <ClCompile Include="src\d2gi\d2gi_zbuf_surf.cpp" />
+    <ClCompile Include="src\d2gi\ScreenGrab\ScreenGrab9.cpp" />
     <ClCompile Include="src\d3d\d3d_device.cpp" />
     <ClCompile Include="src\d3d\d3d_direct3d.cpp" />
     <ClCompile Include="src\ddraw\dd_ddraw.cpp" />
@@ -231,6 +234,7 @@ call echo Shaders compiled.</Command>
     <ClInclude Include="src\d2gi\d2gi_texture.h" />
     <ClInclude Include="src\d2gi\d2gi_vb_container.h" />
     <ClInclude Include="src\d2gi\d2gi_zbuf_surf.h" />
+    <ClInclude Include="src\d2gi\ScreenGrab\ScreenGrab9.h" />
     <ClInclude Include="src\d3d\d3d_direct3d.h" />
     <ClInclude Include="src\d3d\d3d_device.h" />
     <ClInclude Include="src\ddraw\dd_ddraw.h" />

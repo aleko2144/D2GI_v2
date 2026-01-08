@@ -9,7 +9,7 @@ DWORD      D2GIConfig::s_dwVideoWidth = 0, D2GIConfig::s_dwVideoHeight = 0;
 BOOL       D2GIConfig::s_bEnableHooks = TRUE;
 BOOL       D2GIConfig::s_bEnableVSync = FALSE;
 BOOL       D2GIConfig::s_bFixAlpha    = FALSE;
-CHAR       D2GIConfig::s_cScreenshotsPath[256];
+wchar_t    D2GIConfig::s_cScreenshotsPath[MAX_PATH];
 IMG_FORMAT D2GIConfig::s_eImgFormat   = IMG_BMP;
 
 DWORD D2GIConfig::GetVideoWidth()
@@ -61,7 +61,7 @@ VOID D2GIConfig::ReadFromFile()
 
 	//screenshots config
 	//path
-	GetPrivateProfileStringA("screenshots", "screenshots_path", ".\\screenshots", s_cScreenshotsPath, 128, ".\\d2gi.ini");
+	GetPrivateProfileStringW(L"screenshots", L"screenshots_path", L".\\screenshots", s_cScreenshotsPath, MAX_PATH, szConfigFile);
 	//format
 	GetPrivateProfileString(TEXT("screenshots"), TEXT("image_format"),
 		TEXT("bmp"), szWinMode, ARRAYSIZE(szWinMode), szConfigFile);
