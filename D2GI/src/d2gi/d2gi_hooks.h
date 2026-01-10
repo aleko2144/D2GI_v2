@@ -11,6 +11,7 @@ class D2GIHookInjector
 	enum D2VERSION
 	{
 		D2V_UNKNOWN = -1,
+		D2V_1_3,
 		D2V_8_1,
 		D2V_8_2,
 	};
@@ -23,11 +24,13 @@ class D2GIHookInjector
 
 	static D2VERSION DetectD2Version();
 	static BOOL PatchCallOperation(DWORD dwOperationAddress, DWORD dwNewCallAddress);
-	static void __cdecl D2GIHookInjector::ScreenshotHook(void *a2);
+	static void __cdecl D2GIHookInjector::WriteScreenshotFunc(void *a2);
+	static void D2GIHookInjector::InjectScreenshotsPatch();
+
 	static void D2GIHookInjector::OnPrepareStartGame();
-	static void D2GIHookInjector::OnSetupSidebarOffsets();
-	static void D2GIHookInjector::OnCall52ACB0();
-	static BOOL D2GIHookInjector::ResolutionsHook();
+	static void D2GIHookInjector::OnSetupUIOffsets();
+	static void D2GIHookInjector::OnInitClusters();
+	static void D2GIHookInjector::InjectInterfacePatch();
 public:
 	static VOID InjectHooks();
 };
