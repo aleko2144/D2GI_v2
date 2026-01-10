@@ -49,12 +49,6 @@
     <Filter Include="Файлы заголовков\d2gi\g-streaming">
       <UniqueIdentifier>{8a3b8274-abc7-40e3-8c0e-ce04aac64cd0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Исходные файлы\d2gi\ScreenGrab">
-      <UniqueIdentifier>{a2d3a58c-1585-4951-9a0e-ee9c3d8187b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы заголовков\d2gi\ScreenGrab">
-      <UniqueIdentifier>{82bc252a-ae1a-4dcc-b5f8-aa0600cb5730}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="d2gi.def">
@@ -167,9 +161,6 @@
     </ClCompile>
     <ClCompile Include="src\d2gi\d2gi_config.cpp">
       <Filter>Исходные файлы\d2gi</Filter>
-    </ClCompile>
-    <ClCompile Include="src\d2gi\ScreenGrab\ScreenGrab9.cpp">
-      <Filter>Исходные файлы\d2gi\ScreenGrab</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,9 +280,6 @@
     </ClInclude>
     <ClInclude Include="src\d2gi\d2gi_blitter_vs.h">
       <Filter>Файлы заголовков\d2gi</Filter>
-    </ClInclude>
-    <ClInclude Include="src\d2gi\ScreenGrab\ScreenGrab9.h">
-      <Filter>Файлы заголовков\d2gi\ScreenGrab</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

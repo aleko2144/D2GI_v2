@@ -12,13 +12,18 @@
 
 #include "d2gi_common.h"
 
-// Normally a bad practice, but wincodec.h expects some D3D9 types in the global scope, so provide them.
-using namespace D3D9;
+#include <gdiplus.h>
+#pragma comment(lib, "GdiPlus.lib")
 
-#include "ScreenGrab/ScreenGrab9.h"
-#include <wincodec.h>
+//GDI image formats
+static const GUID bmp =
+{ 0x557cf400, 0x1a04, 0x11d3,{ 0x9a, 0x73, 0x00, 0x00, 0xf8, 0x1e, 0xf3, 0x2e } };
 
-#include <wrl/client.h>
+static const GUID jpg =
+{ 0x557cf401, 0x1a04, 0x11d3,{ 0x9a, 0x73, 0x00, 0x00, 0xf8, 0x1e, 0xf3, 0x2e } };
+
+static const GUID png =
+{ 0x557cf406, 0x1a04, 0x11d3,{ 0x9a, 0x73, 0x00, 0x00, 0xf8, 0x1e, 0xf3, 0x2e } };
 
 #define CALL_INSTRUCTION_SIZE 5
 #define OPCODE_SIZE           1
@@ -143,21 +148,39 @@ BOOL D2GIHookInjector::PatchCallOperation(DWORD dwOperationAddress, DWORD dwNewC
 		(BYTE*)dwOperationAddress + OPCODE_SIZE, &nCallOffset, sizeof(nCallOffset), NULL);
 }
 
-class CCoInitialize
-{
-public:
-	CCoInitialize(DWORD dwCoInit) : m_hr(CoInitializeEx(NULL, dwCoInit)) {}
-	~CCoInitialize() { if (SUCCEEDED(m_hr)) CoUninitialize(); }
-	operator HRESULT() const { return m_hr; }
+//https://firststeps.ru/mfc/winapi/r.php?158
+//https://stackoverflow.com/questions/2802188/file-count-in-a-directory-using-c
+void getScreenshotsCount() {
+	int result = 0;
+	char scr_path[128];
+	strcpy(scr_path, D2GIConfig::GetScreenshotsPath());
+	strcat(scr_path, "\\*");
 
-private:
-	const HRESULT m_hr;
-};
+	WIN32_FIND_DATAA find_data;
+	HANDLE hndl = INVALID_HANDLE_VALUE;
+	hndl = FindFirstFileA(scr_path, &find_data);
+
+	if (hndl != INVALID_HANDLE_VALUE) {
+		do {
+			if (strstr(find_data.cFileName, "ddphoto")) {
+				result++;
+			}
+		} while (FindNextFileA(hndl, &find_data) == TRUE);
+		FindClose(hndl);
+	}
+
+	*(int*)0x6F34FC = result;
+}
 
 //struct tagBITMAPINFO *__cdecl sub_5E9EA0(int a1);
 //struct tagBITMAPINFO *__cdecl WritePhotoToFile(FILE *a2)
 //https://qna.habr.com/q/1071410
 void __cdecl D2GIHookInjector::ScreenshotHook(void *a2) {
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR gdiplusToken;
+	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+	//Logger::Log(TEXT("ScreenshotHook->start"));
 
 	D2GI* pD2GI = ObtainD2GI();
 
@@ -166,71 +189,77 @@ void __cdecl D2GIHookInjector::ScreenshotHook(void *a2) {
 		return;
 	}
 
-	CCoInitialize coInit(COINIT_MULTITHREADED);
-	if (FAILED(coInit) && coInit != RPC_E_CHANGED_MODE)
-	{
-		return;
-	}
+	int* screenshots_count = (int*)0x6F34FC;
 
-	using namespace Microsoft::WRL;
-
-	ComPtr<D3D9::IDirect3DDevice9> device(pD2GI->GetD3D9Device());
-	
-	ComPtr<D3D9::IDirect3DSurface9> backbuffer;
-	if (FAILED(device->GetRenderTarget(0, backbuffer.GetAddressOf())))
-	{
-		return;
-	}
-
+	D3D9::IDirect3DDevice9* device = pD2GI->GetD3D9Device();
+	D3D9::IDirect3DSurface9* buffer;
+	D3D9::IDirect3DSurface9* backbuffer;
 	D3D9::D3DSURFACE_DESC desc;
-	if (FAILED(backbuffer->GetDesc(&desc)))
-	{
-		return;
-	}
 
-	ComPtr<D3D9::IDirect3DSurface9> buffer;
-	if (FAILED(device->CreateOffscreenPlainSurface(desc.Width, desc.Height, desc.Format, D3D9::D3DPOOL_SYSTEMMEM, buffer.GetAddressOf(), nullptr)))
-	{
-		return;
-	}
-	
-	if (FAILED(device->GetRenderTargetData(backbuffer.Get(), buffer.Get())))
-	{
-		return;
-	}
+	device->GetRenderTarget(0, &backbuffer);
+	backbuffer->GetDesc(&desc);
 
-	CreateDirectoryW(D2GIConfig::GetScreenshotsPath(), nullptr);
+	device->CreateOffscreenPlainSurface(desc.Width, desc.Height, desc.Format, D3D9::D3DPOOL_SYSTEMMEM, &buffer, nullptr);
+	device->GetRenderTargetData(backbuffer, buffer);
 
-	const wchar_t* extension;
-	const GUID* imageContainerFormat;
+	HDC hdc;
+	buffer->GetDC(&hdc);
+	HDC c_hdc = CreateCompatibleDC(hdc);
+	HBITMAP c_bmp = CreateCompatibleBitmap(hdc, desc.Width, desc.Height);
+
+	SelectObject(c_hdc, c_bmp);
+
+	BitBlt(c_hdc, 0, 0, desc.Width, desc.Height, hdc, 0, 0, SRCCOPY);
+	HBITMAP hBitmap;
+	hBitmap = (HBITMAP)SelectObject(c_hdc, c_bmp);
+	Gdiplus::Bitmap bitmap(hBitmap, NULL);
+
+
+	getScreenshotsCount();
+	CreateDirectoryA(D2GIConfig::GetScreenshotsPath(), 0);
+
+	char screenshot_path[255];
+	//char* to const WCHAR*
+	//https://ru.stackoverflow.com/questions/1457558/%D0%9F%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0-%D1%81-bitmam-save-%D0%B8-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B0%D0%BC%D0%B8
+	int wchars_num;
+	wchar_t* wstr_path;
+
 	switch (D2GIConfig::GetScreenshotsFormat())
 	{
-	case IMG_PNG:
-		extension = L"png";
-		imageContainerFormat = &GUID_ContainerFormatPng;
-		break;
-	case IMG_JPG:
-		extension = L"jpg";
-		imageContainerFormat = &GUID_ContainerFormatJpeg;
-		break;
-	case IMG_BMP:
-	default:
-		extension = L"bmp";
-		imageContainerFormat = &GUID_ContainerFormatBmp;
-		break;
+		case IMG_PNG:
+			sprintf(screenshot_path, "%s\\ddphoto%04d.png", D2GIConfig::GetScreenshotsPath(), *screenshots_count);
+			
+			wchars_num = MultiByteToWideChar(CP_UTF8, 0, screenshot_path, -1, NULL, 0);
+			wstr_path = new wchar_t[wchars_num];
+			MultiByteToWideChar(CP_UTF8, 0, screenshot_path, -1, wstr_path, wchars_num);
+			
+			bitmap.Save(wstr_path, &png);
+			break;
+		case IMG_JPG:
+			sprintf(screenshot_path, "%s\\ddphoto%04d.jpg", D2GIConfig::GetScreenshotsPath(), *screenshots_count);
+			
+			wchars_num = MultiByteToWideChar(CP_UTF8, 0, screenshot_path, -1, NULL, 0);
+			wstr_path = new wchar_t[wchars_num];
+			MultiByteToWideChar(CP_UTF8, 0, screenshot_path, -1, wstr_path, wchars_num);
+			
+			bitmap.Save(wstr_path, &jpg);
+			break;
+		case IMG_BMP:
+			sprintf(screenshot_path, "%s\\ddphoto%04d.bmp", D2GIConfig::GetScreenshotsPath(), *screenshots_count);
+			
+			wchars_num = MultiByteToWideChar(CP_UTF8, 0, screenshot_path, -1, NULL, 0);
+			wstr_path = new wchar_t[wchars_num];
+			MultiByteToWideChar(CP_UTF8, 0, screenshot_path, -1, wstr_path, wchars_num);
+			
+			bitmap.Save(wstr_path, &bmp);
+			break;
+		default:
+			break;
 	}
 
-	SYSTEMTIME systemTime;
-	GetLocalTime(&systemTime);
+	DeleteObject(hBitmap);
 
-	wchar_t screenshot_path[MAX_PATH];
-	swprintf_s(screenshot_path, L"%ls\\ddphoto_%u-%02u-%02u_%02u-%02u-%02u.%ls", D2GIConfig::GetScreenshotsPath(),
-		systemTime.wYear, systemTime.wMonth, systemTime.wDay, systemTime.wHour, systemTime.wMinute, systemTime.wSecond, extension);
-
-	if (SUCCEEDED(DirectX::SaveWICTextureToFile(buffer.Get(), *imageContainerFormat, screenshot_path)))
-	{
-		Logger::Log(TEXT("Screenshot saved."));
-	}
+	Logger::Log(TEXT("Screenshot saved."));
 }
 
 //5DD850
@@ -278,8 +307,8 @@ void D2GIHookInjector::OnCall52ACB0() {
 	float* fov_x = (float *)(*(DWORD *)0x696CCC + 0x58);
 	float* fov_y = (float *)(*(DWORD *)0x696CCC + 0x54);
 
-	*fov_x = ui_aspect * 1.2f;
-	*fov_y = 1.2f;
+	*fov_x = ui_aspect * 1.2;
+	*fov_y = 1.2;
 }
 
 void D2GIHookInjector::OnPrepareStartGame(){

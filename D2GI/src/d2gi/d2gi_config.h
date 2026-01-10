@@ -25,7 +25,7 @@ class D2GIConfig
 	static BOOL       s_bEnableHooks;
 	static BOOL       s_bEnableVSync;
 	static BOOL       s_bFixAlpha;
-	static wchar_t    s_cScreenshotsPath[MAX_PATH];
+	static CHAR       s_cScreenshotsPath[256];
 	static IMG_FORMAT s_eImgFormat;
 public:
 	static VOID ReadFromFile();
@@ -36,6 +36,6 @@ public:
 	static BOOL  HooksEnabled() { return s_bEnableHooks; };
 	static BOOL  VSyncEnabled() { return s_bEnableVSync; };
 	static BOOL  FixAlphaEnabled() { return s_bFixAlpha; };
-	static wchar_t* GetScreenshotsPath() { return s_cScreenshotsPath; };
+	static CHAR* GetScreenshotsPath() { return s_cScreenshotsPath; };
 	static IMG_FORMAT GetScreenshotsFormat() { return s_eImgFormat;  }
 }; 
