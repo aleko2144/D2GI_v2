@@ -20,7 +20,6 @@ The `d2gi.ini` file has the following settings.
 * `Height` - Screen height like `1080` (`0` - auto)  
 * `WindowMode` - Window mode. Possible values: `windowed`, `borderless`, `fullscreen`.
 * `EnableVSync` - Turn vertical sync on or off (`1` and `0` accordingly)
-* `FixAlpha` - enable or disable fix of rendering of transparent zones on objects that have an incorrect location in the rendering hierarchy (this is only necessary in some modifications of the game world)
 
 `HOOKS` section:
 * `EnableHooks` - enable game functions hooking (matrix projection correction with any aspect ratio) 
