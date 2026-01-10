@@ -335,17 +335,8 @@ void D2GIHookInjector::OnSetupSidebarOffsets(){
 	*(int*)0x6CED34 = xres - 225;
 	//MenuGasSprite
 	*(int *)(*(DWORD *)(*(DWORD*)0x6CECCC + 0x38) + 0x2C) = (xres - 1024) / 2;
-
-	/*
-		;right GUI textures
-		;BackConnect  ?
-		;BackGas      x
-		;BackInfo     x
-		;BackJob      x
-		;BackOrder    x
-		;BackSale     x
-		;BackService  x
-	*/
+	//BackConnect
+	*(int *)(*(DWORD *)(*(DWORD*)0x6CECD4 + 0x38) + 0x2C) = (xres - 1024) / 2;
 }
 
 BOOL D2GIHookInjector::ResolutionsHook()
