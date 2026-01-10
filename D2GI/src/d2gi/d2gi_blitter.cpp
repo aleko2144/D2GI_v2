@@ -83,7 +83,10 @@ VOID D2GIBlitter::Blit(IDirect3DSurface9* pDst, FRECT* pDstRT,
 {
 	IDirect3DDevice9* pDev = GetD3D9Device();
 
-	D3DXVECTOR4 vTextureRect, vScreenPosRect, vTextureBorder;
+	struct
+	{
+		float x, y, z, w;
+	} vTextureRect, vScreenPosRect, vTextureBorder;
 
 	D3DSURFACE_DESC sDstDesc, sSrcDesc;
 	FRECT rtSrc, rtDst;
